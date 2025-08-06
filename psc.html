@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Live Password Strength Checker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0e0e0e;
+      color: #e0f7ff;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: #111827;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+      width: 90%;
+      max-width: 480px;
+      text-align: center;
+      border: 1px solid rgba(0, 255, 255, 0.15);
+    }
+
+    h1 {
+      color: #00ffff;
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+
+    input[type="password"] {
+      width: 90%;
+      padding: 14px;
+      margin: 15px 0;
+      border: none;
+      border-radius: 10px;
+      background: #1f2937;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .result {
+      margin-top: 25px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 18px;
+      border-radius: 10px;
+      font-size: 16px;
+      box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1);
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔐 Password Strength Checker</h1>
+
+    <input type="password" id="password" placeholder="Enter your password" autocomplete="off" />
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function checkPassword(password) {
+      const identities = ["!", " ", "=", "(", ")", "[", "]", "{", "}", "\\", "'", ":", ";", "π", "©", "®", "θ", "Θ", '"'];
+      for (let char of identities) {
+        if (password.includes(char)) {
+          return "❌ Password can't contain identities like: !,=,(,),[,],{,},\\,',:,;,π,©,®,θ,Θ,";
+        }
+      }
+
+      if (!/\d/.test(password)) {
+        return "❌ Your password must include at least one number.";
+      }
+
+      const length = password.length;
+      let strength = "";
+      if (length <= 6) {
+        strength = "⚠️ Password strength is low!";
+      } else if (length >= 9 && length <= 14) {
+        strength = "✅ Password strength is strong!!";
+      } else if (length >= 15) {
+        strength = "💪 Password strength is super strong!!!";
+      } else {
+        strength = "🟡 Password strength is moderate.";
+      }
+
+      const alpha = password.replace(/[^a-zA-Z]/g, "");
+      const digits = password.replace(/[^0-9]/g, "");
+      const special = password.replace(/[a-zA-Z0-9]/g, "");
+
+      const crackAlpha = 3 * alpha.length;
+      const crackDigit = 2 * digits.length;
+      const crackSpecial = 4 * special.length;
+      const totalTime = crackAlpha + crackDigit + crackSpecial;
+
+      return `${strength}<br>⏳ Estimated crack time: ${totalTime} seconds`;
+    }
+
+    document.getElementById("password").addEventListener("input", function () {
+      const password = this.value;
+      const result = checkPassword(password);
+      document.getElementById("result").innerHTML = password ? result : "";
+    });
+  </script>
+</body>
+</html>
