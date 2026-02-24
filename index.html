@@ -1,93 +1,432 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>Radio Ashraful</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bostafull Live BDIX TV Server 24/7 BD IPTV</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1321980978077433"
+     crossorigin="anonymous"></script>
 <style>
-  body {
+body {
+    background-color: #0f0f0f;
     margin: 0;
-    background: #0f172a;
+    padding: 0;
+    color: #eaeaea;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    scroll-behavior: smooth;
+}
+
+/* ================= HEADER ================= */
+header {
+    background-color: #570303;
+    color: #fff;
+    padding: 10px 20px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh;
-    font-family: Arial, sans-serif;
-  }
+    justify-content: space-between;
+    border-bottom: 2px solid #fff;
+}
 
-  .radio-player {
-    background: #1e293b;
-    padding: 5vh 6vw;
-    border-radius: 3vw;
-    display: flex;
-    align-items: center;
-    gap: 3vw;
-    box-shadow: 0 2vh 4vh rgba(0,0,0,0.3);
-  }
-
-  .play-btn {
-    width: 15vh;
-    height: 15vh;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    font-size: 10vh;
-    background: #22c55e;
-    color: white;
-    transition: 0.3s ease;
-  }
-
-  .play-btn:hover {
-    background: #16a34a;
-  }
-
-  .station-name {
-    color: white;
-    font-size: 10vh;
+.logo {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.5em;
     font-weight: bold;
-    letter-spacing: 0.2vw;
-  }
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+.nav-links a:hover {
+    background-color: #b80000;
+}
+/* ================= PLAYER ================= */
+.iframe-container {
+    aspect-ratio: 4 / 3;
+    position: relative;
+    margin: 20px auto;
+    max-width: 100%;
+    background: #000;
+}
+
+iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: black;
+}
+
+/* ================= NOW PLAYING + SERVERS ================= */
+.now-playing-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 12px auto 0;
+    padding: 10px 14px;
+    background: #360101;
+    border-radius: 6px;
+}
+
+/* Now Playing (Left) */
+.now-playing {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* Channel logo */
+#channelLogo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    border-radius: 50%;
+    background: #141414;
+    padding: 4px;
+    border: 1px solid #ff3c3c;
+}
+
+/* LIVE dot */
+.live-dot {
+    width: 10px;
+    height: 10px;
+    background: red;
+    border-radius: 50%;
+    animation: livePulse 1.2s infinite;
+    box-shadow: 0 0 6px red;
+}
+
+@keyframes livePulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.8);
+        opacity: 0.6;
+    }
+}
+
+/* ================= SERVER BUTTONS (Right) ================= */
+.server-buttons-container {
+    display: none;
+    gap: 8px;
+}
+
+.server-buttons-container.show {
+    display: flex;
+}
+
+.server-buttons-container button {
+    background-color: #360101;
+    border: 1px solid #fff;
+    padding: 6px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    color: #fff;
+    transition: background-color 0.3s ease, transform 0.2s;
+    white-space: nowrap;
+}
+
+.server-buttons-container button:hover {
+    background-color: #ff3c3c;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* ================= CATEGORY FILTER ================= */
+.category-filter {
+    margin: 25px auto;
+    text-align: center;
+    color: #fff;
+}
+
+.category-filter select {
+    padding: 10px 14px;
+    font-size: 16px;
+    border-radius: 6px;
+    background-color: #1a1a1a;
+    color: #fff;
+    border: 1px solid #444;
+    outline: none;
+}
+
+/* ================= LOGOS ================= */
+.logos-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 15px;
+    margin: 20px auto;
+}
+
+.logos-container img {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    aspect-ratio: 4 / 3;
+    padding: 6px;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s;
+}
+
+.logos-container img:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 12px rgba(255, 60, 60, 0.6);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (min-width: 720px) {
+    .iframe-container {
+        max-height: 65vh;
+        max-width: 75%;
+        border: 3px solid #fff;
+    }
+
+    .logos-container {
+        max-width: 80vw;
+    }
+    .now-playing-wrapper {
+    max-width: 35%;
+    border: 2px solid red;
+}
+}
+
+@media (min-width: 800px) {
+    .logos-container img {
+        width: 7vw;
+        height: 7vw;
+    }
+}
+
+@media (max-width: 720px) {
+    .nav-links {
+        display: none;
+    }
+
+    header {
+        border-bottom: 0;
+    }
+
+    .iframe-container {
+        width: 100%;
+        margin: 0 auto;
+    border-bottom: 3px solid #fff;
+    }
+
+    /* Stack now playing + servers */
+    .now-playing-wrapper {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .server-buttons-container {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .server-buttons-container button {
+    padding: 8px 18px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 4px;
+    color: #fff;
+    white-space: nowrap;
+}
+
+    .now-playing {
+        font-size: 16px;
+    }
+
+    #channelLogo {
+        width: 22px;
+        height: 22px;
+    }
+.now-playing-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 12px auto 0;
+    padding: 10px 14px;
+    background: #0f0f0f;
+    border-radius: 0px;
+}
+}
+
+
+@media (max-width: 400px) {
+    .logos-container img {
+        width: 70px;
+        height: 70px;
+    }
+}
 </style>
 </head>
 <body>
+    <header>
+    <a href="https://bostaflix.vercel.app/index.html" class="logo">BOSTAFLIX</a>
+    <nav class="nav-links">
+      <a href="https://bostaflix.vercel.app/sports.html">Sports</a>
+      <a href="https://bostaflix.vercel.app/news.html">News</a>
+      <a href="https://bostaflix.vercel.app/entertainment.html">Entertainment</a>
+      <a href="https://bostaflix.vercel.app/movies.html">Movies</a>
+      <a href="https://bostaflix.vercel.app/kids.html">Kids</a>
+    </nav>
+  </header>
+    <!-- Iframe container for the player -->
+    <div class="iframe-container">
+        <iframe id="videoFrame" allowfullscreen></iframe>
+    </div>
+<div class="now-playing-wrapper">
+    <div id="nowPlaying" class="now-playing">
+        <span class="live-dot"></span>
+        <img id="channelLogo" src="" alt="Channel Logo">
+        <span id="channelName">None</span>
+    </div>
 
-<div class="radio-player">
-  <button id="playButton" class="play-btn">▶</button>
-  <div class="station-name">Radio Ashraful</div>
+    <div id="serverButtons" class="server-buttons-container"></div>
 </div>
 
-<audio id="audio"></audio>
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<div class="logos-container">
+    <img src="https://user-content.cloud.caster.fm/file/casterfm-cloud-usercontent/38136/conversions/cover-thumb.jpg" alt="Somoy TV" data-category="News" onclick="loadServers(['https://bostaflix.vercel.app/server.html'], 'Radio Ashraful')">    <!-- Add more logos with appropriate data-category attributes -->
+    </div>
 <script>
-  const audio = document.getElementById('audio');
-  const button = document.getElementById('playButton');
-  const streamURL = "https://radio-ashraful.vercel.app/api/live/playlist.m3u8";
+/* Load iframe */
+function loadIframe(serverLink) {
+    document.getElementById('videoFrame').src = serverLink;
+}
 
-  let isPlaying = false;
+/* Load servers + NOW PLAYING */
+function loadServers(servers, channelName) {
+    const serverButtons = document.getElementById('serverButtons');
+    serverButtons.innerHTML = '';
 
-  if (Hls.isSupported()) {
-    const hls = new Hls({
-      liveSyncDurationCount: 3
-    });
-    hls.loadSource(streamURL);
-    hls.attachMedia(audio);
-  } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-    audio.src = streamURL;
-  }
+    // get clicked logo (works with your current HTML)
+    const logoSrc = event.currentTarget.src;
 
-  button.addEventListener('click', () => {
-    if (!isPlaying) {
-      audio.play();
-      button.textContent = "⏸";
-      isPlaying = true;
-    } else {
-      audio.pause();
-      button.textContent = "▶";
-      isPlaying = false;
+    /* ---------- NOW PLAYING BAR ---------- */
+    let nowPlaying = document.getElementById('nowPlaying');
+    if (!nowPlaying) {
+        nowPlaying = document.createElement('div');
+        nowPlaying.id = 'nowPlaying';
+        nowPlaying.style.cssText = `
+            display:flex;
+            align-items:center;
+            gap:12px;
+            padding:10px 15px;
+            margin:12px auto;
+            max-width:80%;
+            background:#0d0d0d;
+            border-left:4px solid red;
+            font-size:18px;
+            color:#fff;
+            border-radius:6px;
+        `;
+        document.querySelector('.iframe-container').after(nowPlaying);
     }
-  });
+
+    nowPlaying.innerHTML = `
+        <img src="${logoSrc}" style="width:42px;height:42px;border-radius:50%;background:#fff;padding:4px">
+        <strong>${channelName}</strong>
+        <span class="live-dot"></span>
+        <span style="color:red;font-weight:bold">LIVE</span>
+    `;
+
+    // Add animated LIVE dot once
+    if (!document.getElementById('liveDotStyle')) {
+        const style = document.createElement('style');
+        style.id = 'liveDotStyle';
+        style.innerHTML = `
+            .live-dot{
+                width:10px;
+                height:10px;
+                background:red;
+                border-radius:50%;
+                animation:pulse 1s infinite;
+            }
+            @keyframes pulse{
+                0%{box-shadow:0 0 0 0 rgba(255,0,0,.8)}
+                70%{box-shadow:0 0 0 12px rgba(255,0,0,0)}
+                100%{box-shadow:0 0 0 0 rgba(255,0,0,0)}
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    /* ---------- END NOW PLAYING ---------- */
+
+    // load first server
+    loadIframe(servers[0]);
+
+    // server buttons
+    servers.forEach((server, index) => {
+        const button = document.createElement('button');
+        button.innerText = `Server ${index + 1}`;
+        button.onclick = () => loadIframe(server);
+        serverButtons.appendChild(button);
+    });
+
+    serverButtons.classList.add('show');
+    document.querySelector('header').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* Filter channels */
+function filterChannels() {
+    const selectedCategory = document.getElementById('categorySelect').value.toLowerCase();
+    document.querySelectorAll('img[data-category]').forEach(img => {
+        const categories = img.dataset.category.toLowerCase().split(',').map(c => c.trim());
+        img.style.display =
+            (selectedCategory === 'all' || categories.includes(selectedCategory)) ? '' : 'none';
+    });
+}
+
+/* Query params */
+function getQueryParam(param) {
+    return new URLSearchParams(window.location.search).get(param);
+}
+
+/* Default load */
+window.onload = function () {
+    const id = getQueryParam('id');
+    const server = getQueryParam('server');
+
+    if (id && server) {
+        loadIframe(`${server}.html?id=${id}`);
+    } else {
+        // DEFAULT PAGE when nothing selected
+        loadIframe('https://bostaflix.vercel.app/server.html');
+    }
+};
+
 </script>
 
+    <!-- Footer -->
+<div style="color: white; background-color: rgba(0, 0, 0, 0.5); padding: 10px; text-align: center;">
+  &copy; Bostafull Live by Syed Ashraful Islam Mahbeer. Any embedded content on this site are collected from the internet and Bostafull Live is not Connected with them. Wait up to 1 min to load, if not, change server.
+</div>
 </body>
 </html>
