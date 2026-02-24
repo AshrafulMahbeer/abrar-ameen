@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Radio Ashraful</title>
+
+<style>
+  body {
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+  }
+
+  .radio-player {
+    background: #1e293b;
+    padding: 20px 30px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  }
+
+  .play-btn {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    background: #22c55e;
+    color: white;
+    transition: 0.3s ease;
+  }
+
+  .play-btn:hover {
+    background: #16a34a;
+  }
+
+  .station-name {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<div class="radio-player">
+  <button id="playButton" class="play-btn">▶</button>
+  <div class="station-name">Radio Ashraful</div>
+</div>
+
+<audio id="audio"></audio>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+  const audio = document.getElementById('audio');
+  const button = document.getElementById('playButton');
+  const streamURL = "https://radio-ashraful.vercel.app/api/live/playlist.m3u8";
+
+  let isPlaying = false;
+
+  if (Hls.isSupported()) {
+    const hls = new Hls({
+      liveSyncDurationCount: 3
+    });
+    hls.loadSource(streamURL);
+    hls.attachMedia(audio);
+  } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+    audio.src = streamURL;
+  }
+
+  button.addEventListener('click', () => {
+    if (!isPlaying) {
+      audio.play();
+      button.textContent = "⏸";
+      isPlaying = true;
+    } else {
+      audio.pause();
+      button.textContent = "▶";
+      isPlaying = false;
+    }
+  });
+</script>
+
+</body>
+</html>
