@@ -6,11 +6,6 @@ export const config = {
 
 export default async function handler(req, res) {
 
-  if (req.method !== "POST") {
-    res.status(405).send("POST only");
-    return;
-  }
-
   const chunks = [];
 
   for await (const chunk of req) {
@@ -19,9 +14,12 @@ export default async function handler(req, res) {
 
   const body = Buffer.concat(chunks);
 
-  res.setHeader("Content-Type", req.headers["content-type"] || "application/octet-stream");
+  res.setHeader(
+    "Content-Type",
+    req.headers["content-type"] || "application/octet-stream"
+  );
 
-  // 60s cache
+  // 60 second cache
   res.setHeader("Cache-Control", "public, max-age=60, s-maxage=60");
 
   res.status(200).send(body);
