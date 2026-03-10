@@ -9,6 +9,9 @@ export default async function handler(req, res) {
   const ANCHOR_TIME = new Date("2025-01-01T00:00:00Z").getTime();
   const now = Date.now();
 
+  const elapsedSeconds = Math.floor((now - ANCHOR_TIME) / 1000);
+  const segmentNumber = Math.floor(elapsedSeconds / SEGMENT_DURATION);
+
   let playlist = "";
   let liveActive = false;
 
@@ -26,25 +29,23 @@ export default async function handler(req, res) {
 
         const lines = text.split("\n");
 
-        let mediaSequence = 0;
-
-        for (const l of lines) {
-          if (l.startsWith("#EXT-X-MEDIA-SEQUENCE")) {
-            mediaSequence = parseInt(l.split(":")[1]);
-          }
-        }
+        const mediaSequence = segmentNumber;
 
         playlist += `#EXTM3U
 #EXT-X-VERSION:3
-#EXT-X-TARGETDURATION:7
+#EXT-X-TARGETDURATION:10
 #EXT-X-DISCONTINUITY
+#EXT-X-MEDIA-SEQUENCE:${mediaSequence}
 `;
+
+        let count = 0;
 
         for (let i = 0; i < lines.length; i++) {
 
           const line = lines[i].trim();
 
           if (line.startsWith("#EXTINF")) {
+
             playlist += line + "\n";
 
             const seg = lines[i + 1].trim();
@@ -52,6 +53,9 @@ export default async function handler(req, res) {
             const absolute = new URL(seg, LIVE_URL).href;
 
             playlist += absolute + "\n";
+
+            count++;
+            if (count >= WINDOW_SIZE) break;
           }
         }
       }
@@ -61,9 +65,6 @@ export default async function handler(req, res) {
 
   if (!liveActive) {
 
-    const elapsedSeconds = Math.floor((now - ANCHOR_TIME) / 1000);
-    const segmentNumber = Math.floor(elapsedSeconds / SEGMENT_DURATION);
-
     const firstSegment = segmentNumber - WINDOW_SIZE + 1;
     const mediaSequence = firstSegment;
 
@@ -72,6 +73,7 @@ export default async function handler(req, res) {
 #EXT-X-TARGETDURATION:${SEGMENT_DURATION}
 #EXT-X-INDEPENDENT-SEGMENTS
 #EXT-X-DISCONTINUITY
+#EXT-X-MEDIA-SEQUENCE:${mediaSequence}
 `;
 
     for (let i = 0; i < WINDOW_SIZE; i++) {
