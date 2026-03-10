@@ -1,13 +1,12 @@
+let lastLiveSequence = null;
+
 export default async function handler(req, res) {
 
   const LIVE_URL = "https://live-hz-12.livepush.io/live/emNsRVm3A86j8F9/chunks.m3u8";
 
-  const SEGMENT_DURATION = 10;
+  const SEGMENT_DURATION = 6;
   const WINDOW_SIZE = 6;
   const MAX_SEGMENTS = 298;
-
-  const ANCHOR_TIME = new Date("2025-01-01T00:00:00Z").getTime();
-  const now = Date.now();
 
   let playlist = "";
   let liveActive = false;
@@ -34,10 +33,11 @@ export default async function handler(req, res) {
           }
         }
 
+        lastLiveSequence = mediaSequence + WINDOW_SIZE;
+
         playlist += `#EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-TARGETDURATION:7
-#EXT-X-DISCONTINUITY
 #EXT-X-MEDIA-SEQUENCE:${mediaSequence}
 `;
 
@@ -46,6 +46,7 @@ export default async function handler(req, res) {
           const line = lines[i].trim();
 
           if (line.startsWith("#EXTINF")) {
+
             playlist += line + "\n";
 
             const seg = lines[i + 1].trim();
@@ -62,35 +63,29 @@ export default async function handler(req, res) {
 
   if (!liveActive) {
 
-    const elapsedSeconds = Math.floor((now - ANCHOR_TIME) / 1000);
-    const segmentNumber = Math.floor(elapsedSeconds / SEGMENT_DURATION);
+    if (lastLiveSequence === null) {
+      lastLiveSequence = 0;
+    }
 
-    const firstSegment = segmentNumber - WINDOW_SIZE + 1;
-    const mediaSequence = firstSegment;
+    const mediaSequence = lastLiveSequence;
 
     playlist += `#EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-TARGETDURATION:${SEGMENT_DURATION}
-#EXT-X-INDEPENDENT-SEGMENTS
 #EXT-X-DISCONTINUITY
 #EXT-X-MEDIA-SEQUENCE:${mediaSequence}
 `;
 
     for (let i = 0; i < WINDOW_SIZE; i++) {
 
-      const segNum = firstSegment + i;
-
-      if (segNum < 0) continue;
-
-      const fileIndex = segNum % MAX_SEGMENTS;
-
-      if (segNum > 0 && fileIndex === 0) {
-        playlist += "#EXT-X-DISCONTINUITY\n";
-      }
+      const seq = mediaSequence + i;
+      const fileIndex = seq % MAX_SEGMENTS;
 
       playlist += `#EXTINF:${SEGMENT_DURATION}.0,\n`;
-      playlist += `https://radio-ashraful.vercel.app/radio/hls/${fileIndex}.ts?v=${segNum}\n`;
+      playlist += `https://radio-ashraful.vercel.app/radio/hls/${fileIndex}.ts?v=${seq}\n`;
     }
+
+    lastLiveSequence += WINDOW_SIZE;
   }
 
   res.setHeader("Content-Type", "application/vnd.apple.mpegurl");
