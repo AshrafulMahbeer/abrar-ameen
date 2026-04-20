@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
 
-  const LIVE_URL = "https://live-hz-12.livepush.io/live/emNsRVm3A86j8F9/chunks.m3u8";
+  const LIVE_URL = "https://tvsky-bostaflix.global.ssl.fastly.net/playlist.m3u8";
 
   const SEGMENT_DURATION = 10;
   const WINDOW_SIZE = 6;
